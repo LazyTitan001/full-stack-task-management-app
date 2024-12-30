@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, check } = require('express-validator');
 
 // Validation middleware
 const validate = (req, res, next) => {
@@ -59,15 +59,13 @@ const menuValidation = [
     .isBoolean().withMessage('Availability must be true or false')
 ];
 
-const orderValidation = [
-  body('items')
-    .isArray().withMessage('Items must be an array')
-    .notEmpty().withMessage('Order must contain at least one item'),
-  body('items.*.menuItem')
-    .isMongoId().withMessage('Invalid menu item ID'),
-  body('items.*.quantity')
-    .isInt({ min: 1 }).withMessage('Quantity must be at least 1')
-];
+const orderValidation = {
+  createOrder: [
+    check('items').isArray().withMessage('Items must be an array'),
+    check('items.*.menuItem').isMongoId().withMessage('Invalid menu item ID'),
+    check('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1')
+  ]
+};
 
 module.exports = {
   validate,

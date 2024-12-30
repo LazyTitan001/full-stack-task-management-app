@@ -8,7 +8,7 @@ exports.register = [
   validate,
   async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { username, password, role } = req.body;
 
       let user = await User.findOne({ username });
       if (user) {
@@ -18,7 +18,8 @@ exports.register = [
       const hashedPassword = await bcrypt.hash(password, 10);
       user = await User.create({
         username,
-        password: hashedPassword
+        password: hashedPassword,
+        role
       });
 
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
