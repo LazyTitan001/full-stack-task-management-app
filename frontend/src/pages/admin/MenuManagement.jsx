@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 function MenuManagement() {
   const [menuItems, setMenuItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [sortBy, setSortBy] = useState('name-asc');
   const [currentItem, setCurrentItem] = useState({
     name: '',
     category: 'Main Course',
@@ -75,11 +76,38 @@ function MenuManagement() {
     }
   };
 
+  const getSortedItems = (items) => {
+    switch (sortBy) {
+      case 'name-asc':
+        return [...items].sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-desc':
+        return [...items].sort((a, b) => b.name.localeCompare(a.name));
+      case 'price-asc':
+        return [...items].sort((a, b) => a.price - b.price);
+      case 'price-desc':
+        return [...items].sort((a, b) => b.price - a.price);
+      default:
+        return items;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900">
       <AdminNavbar />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-8">Menu Management</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-white">Menu Management</h1>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-gray-700 text-white px-4 py-2 rounded-md"
+          >
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+          </select>
+        </div>
         
         <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -143,7 +171,7 @@ function MenuManagement() {
         </form>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {menuItems.map(item => (
+          {getSortedItems(menuItems).map(item => (
             <AdminMenuCard
               key={item._id}
               item={item}
