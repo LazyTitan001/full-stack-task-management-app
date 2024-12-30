@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getUserOrders } = require('../controllers/orderController');
+const { createOrder, getUserOrders, getAllOrders, updateOrderStatus } = require('../controllers/orderController');
 const { auth } = require('../middleware/auth');
 const { validate, orderValidation } = require('../middleware/validate');
 
-// user order routes
-router.post('/orders', auth, orderValidation.createOrder, validate, createOrder);
-router.get('/orders', auth, getUserOrders);
+// All order routes are protected
+router.use(auth);
+
+router.post('/', orderValidation.createOrder, validate, createOrder);
+router.get('/user', getUserOrders);
+router.get('/all', getAllOrders); // For admin only
+router.patch('/:id/status', updateOrderStatus); // For admin only
 
 module.exports = router;
