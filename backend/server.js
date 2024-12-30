@@ -28,12 +28,24 @@ app.use((err, req, res, next) => {
 const PORT = 3000;
 
 const startServer = async () => {
-  await connectDB();
-  await initializeAdmin();
-  
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  try {
+    await connectDB();
+    console.log('MongoDB connected successfully');
+    
+    try {
+      await initializeAdmin();
+    } catch (error) {
+      console.error('Failed to initialize admin account:', error.message);
+      // Continue server startup even if admin initialization fails
+    }
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
 };
 
 startServer();

@@ -26,16 +26,7 @@ exports.adminLogin = async (req, res) => {
 
     const token = generateAdminToken(admin._id);
 
-    res.json({
-      success: true,
-      data: {
-        token,
-        admin: {
-          id: admin._id,
-          username: admin.username
-        }
-      }
-    });
+    res.json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -46,14 +37,21 @@ exports.initializeAdmin = async () => {
   try {
     const adminExists = await Admin.countDocuments();
     if (adminExists === 0) {
+      if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_INITIAL_PASSWORD) {
+        throw new Error('Admin credentials not found in environment variables');
+      }
+      
       const hashedPassword = await bcrypt.hash(process.env.ADMIN_INITIAL_PASSWORD, 10);
       await Admin.create({
         username: process.env.ADMIN_USERNAME,
         password: hashedPassword
       });
-      console.log('Admin account initialized');
+      console.log('Admin account initialized successfully');
+    } else {
+      console.log('Admin account already exists');
     }
   } catch (error) {
-    console.error('Error initializing admin account:', error);
+    console.error('Error initializing admin account:', error.message);
+    throw error;
   }
 };

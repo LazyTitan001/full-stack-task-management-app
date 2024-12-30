@@ -31,17 +31,7 @@ exports.register = async (req, res) => {
 
     const token = generateToken(user._id);
     
-    res.status(201).json({
-      success: true,
-      data: {
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          role: user.role
-        }
-      }
-    });
+    res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ 
       success: false, 
@@ -72,17 +62,7 @@ exports.login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.json({
-      success: true,
-      data: {
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          role: user.role
-        }
-      }
-    });
+    res.json({ token });
   } catch (error) {
     res.status(500).json({ 
       success: false, 
