@@ -24,7 +24,7 @@ function OrdersPage() {
   const fetchOrders = async () => {
     try {
       const data = await getUserOrders(user.token);
-      setOrders(data);
+      setOrders(data || []); 
     } catch (error) {
       toast.error('Failed to fetch orders');
     }
@@ -107,10 +107,12 @@ function OrdersPage() {
                 
                 <div className="space-y-2">
                   {order.items.map((item, index) => (
-                    <div key={index} className="text-gray-300">
-                      {item.quantity}x {item.menuItem.name} - ₹
-                      {(item.menuItem.price * item.quantity).toFixed(2)}
-                    </div>
+                    item.menuItem && (
+                      <div key={index} className="text-gray-300">
+                        {item.quantity}x {item.menuItem.name} - ₹
+                        {(item.menuItem.price * item.quantity).toFixed(2)}
+                      </div>
+                    )
                   ))}
                 </div>
               </div>
