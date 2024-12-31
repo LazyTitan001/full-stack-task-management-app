@@ -32,7 +32,7 @@ exports.adminLogin = async (req, res) => {
   }
 };
 
-// Initialize admin account (run this once)
+// Initialize admin account (run once)
 exports.initializeAdmin = async () => {
   try {
     const adminExists = await Admin.countDocuments();

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../../services/authApi'; // Ensure this import is correct
+import { loginAdmin } from '../../services/authApi'; 
 import { useAdmin } from '../../context/AdminContext';
 import toast from 'react-hot-toast';
 
 function AdminLogin() {
   const [credentials, setCredentials] = useState({
-    username: '',    // changed from email to username
+    username: '',  
     password: ''
   });
   const navigate = useNavigate();
@@ -35,11 +35,11 @@ function AdminLogin() {
           <div>
             <label className="text-white block mb-2">Username</label>
             <input
-              type="text"  // changed from email to text
-              value={credentials.username}  // changed from email to username
+              type="text"  
+              value={credentials.username}  
               onChange={(e) => setCredentials({
                 ...credentials,
-                username: e.target.value  // changed from email to username
+                username: e.target.value
               })}
               className="w-full p-2 rounded bg-gray-700 text-white"
               required

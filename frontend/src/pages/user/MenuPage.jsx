@@ -12,6 +12,8 @@ function MenuPage() {
   const [sortBy, setSortBy] = useState('name-asc');
   const { user } = useUser();
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     if (!user) {
@@ -51,11 +53,15 @@ function MenuPage() {
     : menuItems.filter(item => item.category === selectedCategory);
   
   const sortedItems = getSortedItems(filteredItems);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sortedItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="h-screen flex flex-col bg-gray-900">
       <UserNavbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="flex-1 flex flex-col px-4 py-8">
         <h1 className="text-3xl font-bold text-white mb-8">Menu</h1>
         
         <div className="flex justify-between items-center mb-6">
@@ -87,10 +93,35 @@ function MenuPage() {
           </select>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedItems.map(item => (
-            <UserMenuCard key={item._id} item={item} />
-          ))}
+        <div className="flex-1 overflow-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentItems.map(item => (
+              <UserMenuCard key={item._id} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="pt-4 border-t border-gray-800">
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded bg-gray-700 text-white disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-white">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded bg-gray-700 text-white disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
